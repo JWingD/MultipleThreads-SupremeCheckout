@@ -3,100 +3,130 @@ import time
 import sys
 from threading import Thread
 
+
+def AutoInfo(driver):
+    
+    #name
+    driver.execute_script("document.getElementById('order_billing_name').value='*Name*'")
+
+    #email
+    driver.execute_script("document.getElementById('order_email').value='*email*'")
+
+    #Tel
+    driver.execute_script("document.getElementById('order_tel').value='*tel*'")
+     
+
+
+
+
+def AutoAddress(driver):
+    #Street name
+    driver.execute_script("document.getElementById('bo').value='*Street Name*'")
+
+    #apt number
+    driver.execute_script("document.getElementById('oba3').value='*Apt Number*'")
+
+    #zip
+    driver.execute_script("document.getElementById('order_billing_zip').value='*Zip code*'")
+
+    #city
+    driver.execute_script("document.getElementById('order_billing_city').value='*city*'")
+
+
+ 
+
+
+def AutoCardInfoOne(driver):
+
+    #State
+    driver.find_by_value("MA").click()
+  
+
+    #Country
+    driver.find_by_value('USA').click()
+    
+    
+    #credit card number
+    driver.execute_script("document.getElementById('nnaerb').value='12345678'")
+
+    #expiration month
+    driver.find_by_value("01").click()
+ 
+
+
+
+ 
+
+def AutoCardInfoTwo(driver):
+   
+   #expiration year
+    driver.find_by_value("2020").click()
+    
+    #CVV
+    driver.execute_script("document.getElementById('orcer').value='123'")
+    driver.find_by_css('label.terms').click()
+
+
 def supreme(url, keyword, color):
 
 # all are strings ''
     b = Browser(driver_name = "chrome")
+    input("Press Enter to continue...")
     b.visit(url)
-    button_type = b.find_link_by_partial_text(keyword)
-    button_type.click()
-    time.sleep(2)
+    b.find_link_by_partial_text(keyword).click()
     #choose color
     if color == 'Black':
-        button_color=b.find_by_xpath("/html/body//a[@data-style-name='Black']")
-        button_color.click()
+        b.find_by_xpath("/html/body//a[@data-style-name='Black']").click()
     elif color == 'Red':
-        button_color=b.find_by_xpath("/html/body//a[@data-style-name='Red']")
-        button_color.click()
+        b.find_by_xpath("/html/body//a[@data-style-name='Red']").click()
     elif color == 'Blue':
-        button_color=b.find_by_xpath("/html/body//a[@data-style-name='Blue']")
-        button_color.click()
+        b.find_by_xpath("/html/body//a[@data-style-name='Blue]").click()
     elif color == 'Navy':
-        button_color=b.find_by_xpath("/html/body//a[@data-style-name='Navy']")
-        button_color.click()
+        b.find_by_xpath("/html/body//a[@data-style-name='Navy]").click()
     elif color == 'Green':
-        button_color=b.find_by_xpath("/html/body//a[@data-style-name='Green']")
-        button_color.click()
+        b.find_by_xpath("/html/body//a[@data-style-name='Green']").click()
         
-    time.sleep(2)
-    button_cart = b.find_by_value("add to cart")
-    button_cart.click()
+    while True:
+        elementList = b.find_by_value("add to cart")
+        if not elementList.is_empty():
+            break
+    b.find_by_value("add to cart").click()
+ 
 
-    time.sleep(2)
-    #b.is_element_visible_by_href("https://www.supremenewyork.com/checkout")
-    #b.implicitly_wait(5)
-    button_checkout = b.find_link_by_href("https://www.supremenewyork.com/checkout")
-    button_checkout.click()
+    while True:
+        elementList = b.find_link_by_href("https://www.supremenewyork.com/checkout")
+        if not elementList.is_empty():
+            break
+    b.find_link_by_href("https://www.supremenewyork.com/checkout").click()
 
-        #Auto Filling
-    #time.sleep(10)
+    while True:
+        elementList = b.find_by_value('USA')
+        if not elementList.is_empty():
+            break
 
-        #Name: First and Last
-    b.execute_script("document.getElementById('order_billing_name').value='Martino Last Name'")
-
-        #email
-    b.execute_script("document.getElementById('order_email').value='Martino@email.address'")
-
-        #Tel
-    b.execute_script("document.getElementById('order_tel').value='xxx-xxx-xxxx'")
-
-        #Street name
-    b.execute_script("document.getElementById('bo').value='Street Address'")
-
-    #apt number
-    b.execute_script("document.getElementById('oba3').value='Apt number'")
-
-        #zip
-    b.execute_script("document.getElementById('order_billing_zip').value='zip code'")
-
-        #city
-    b.execute_script("document.getElementById('order_billing_city').value='City'")
-
-        #State
-    button_state = b.find_by_value("MA")
-    button_state.click()
-
-        #Country
-    button_country = b.find_by_value('USA')
-    button_country.click()
-
-
-        #credit card number
-    b.execute_script("document.getElementById('nnaerb').value='123456789'")
-
-        #expiration month
-    button_month = b.find_by_value("01")
-    button_month.click()
-
-        #expiration year
-    button_year = b.find_by_value("2020")
-    button_month.click()
-
-    #CVV
-    b.execute_script("document.getElementById('orcer').value='123'")
-    b.find_by_css('label.terms').click()
+    threads = []
+    t_1 = Thread(target = AutoInfo, args = [b])
+    t_1.start()
+    threads.append(t_1)
+    
+    t_2 = Thread(target = AutoAddress, args = [b])
+    t_2.start()
+    threads.append(t_2)
+    
+    t_3= Thread(target = AutoCardInfoOne, args = [b])
+    t_3.start()
+    threads.append(t_3)
+    
+    t_4= Thread(target = AutoCardInfoTwo, args = [b])
+    t_4.start()
+    threads.append(t_4)  
 
 
 
 if __name__ == "__main__":
-    data = [["https://www.supremenewyork.com/shop/all/jackets",'Leather Trucker','Red'],\
-           ["https://www.supremenewyork.com/shop/all/shirts",'Pin Tuck', 'Black']]
-    threads = [] 
-    for i in range(len(data)): 
-        t = Thread(target=supreme,args=data[i])
-        threads.append(t) 
- 
-  # start all the thread
-    for thr in threads:
-        thr.start()
-# MultipleThreads-SupremeCheckout
+    supreme("https://www.supremenewyork.com/shop/all/jackets",'Leather Trucker Jacket', 'Black')
+
+
+
+
+####################JWingD#########################
